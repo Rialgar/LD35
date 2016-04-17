@@ -61,7 +61,16 @@ function Map(number, bgCanvas, scale){
 
 Map.prototype.update = function(millis){
   for(var i = 0; i < this.shapes.length; i++){
+    var shape = this.shapes[i];
+    var xBefore = Math.round(shape.x);
+    var yBefore = Math.round(shape.y);
     this.shapes[i].update(millis);
+    var xAfter = Math.round(shape.x);
+    var yAfter = Math.round(shape.y);
+    if(xAfter != xBefore || yAfter != yBefore){
+      this.tiles[xBefore][yBefore].shape = null;
+      this.tiles[xAfter][yAfter].shape = shape;
+    }
   }
   for(var i = 0; i < this.receptors.length; i++){
     this.receptors[i].update(millis);
@@ -70,15 +79,15 @@ Map.prototype.update = function(millis){
 
 Map.prototype.draw = function(ctx){
   ctx.translate(.5, .5);
-  for(var i = 0; i < this.shapes.length; i++){
-    ctx.translate(this.shapes[i].x, this.shapes[i].y);
-    this.shapes[i].draw(ctx);
-    ctx.translate(-this.shapes[i].x, -this.shapes[i].y);
-  }
   for(var i = 0; i < this.receptors.length; i++){
     ctx.translate(this.receptors[i].x, this.receptors[i].y);
     this.receptors[i].draw(ctx);
     ctx.translate(-this.receptors[i].x, -this.receptors[i].y);
+  }
+  for(var i = 0; i < this.shapes.length; i++){
+    ctx.translate(this.shapes[i].x, this.shapes[i].y);
+    this.shapes[i].draw(ctx);
+    ctx.translate(-this.shapes[i].x, -this.shapes[i].y);
   }
 };
 
@@ -109,25 +118,42 @@ Map.prototype.resize = function(scale){
   this.drawBackground();
 }
 
+Map.prototype.hasColision = function(x, y){
+  return x < 0 || y < 0 || x >= Map.mapSize || y >= Map.mapSize ||
+    this.tiles[x][y].collision || this.tiles[x][y].shape;
+}
+
+Map.prototype.getTarget = function(fromX, fromY, dirX, dirY){
+  while(true){
+    var nx = fromX + dirX;
+    var ny = fromY + dirY;
+    if(this.hasColision(nx, ny)){
+      return {x: fromX, y: fromY};
+    }
+    fromX = nx;
+    fromY = ny;
+  }
+};
+
 Map.specs = [
   [
     "####################",
-    "#3#4#5#6#          #",
-    "# # # # #          #",
-    "# # # # #          #",
-    "# # # # #          #",
-    "# # # # #          #",
-    "# # # # #          #",
-    "# # # # #          #",
-    "# # # # #          #",
-    "# # # # #          #",
-    "# # # # #          #",
-    "# # # # ############",
-    "# # # #           z#",
-    "# # # ##############",
-    "# # #             t#",
-    "# # ################",
-    "# #               r#",
+    "#3#r               #",
+    "# ################ #",
+    "# #5#z           # #",
+    "# # ############ # #",
+    "# # #          # # #",
+    "# # #          # # #",
+    "# # #          # # #",
+    "# # #          # # #",
+    "# # #          # # #",
+    "# # #          # # #",
+    "# # #          # # #",
+    "# # #          # # #",
+    "# # #          # # #",
+    "# # #          #6# #",
+    "# # ############## #",
+    "# #             t#4#",
     "# ##################",
     "#                 e#",
     "####################"

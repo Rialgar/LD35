@@ -13,7 +13,7 @@
 * Render Receptors __✔__
 * Render Map __✔__
 * Render Selector __✔__
-* Movement
+* Movement __✔__
 * Reception
 * Render Changing Tile
 * Shape Changing

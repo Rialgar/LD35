@@ -2,14 +2,35 @@ function Shape(x, y, sides){
   this.rotation = 0;
   this.radius = .4;
   this.sides = sides;
-  this.x = x;
-  this.y = y;
+  this.x = (this.targetX = x);
+  this.y = (this.targetY = y);
   this.selected = false;
+  this.moving = false;
 }
 
 Shape.prototype.update = function(millis){
   if(this.selected){
     this.rotation = (this.rotation + Math.PI * millis/1000)%(2*Math.PI);
+  }
+  if(this.moving){
+    if(this.targetX != this.x || this.targetY != this.y){
+      var deltaX = this.targetX - this.x;
+      var movX = deltaX/Math.abs(deltaX) * millis*10/1000;
+      if(Math.abs(movX) < Math.abs(deltaX)){
+        this.x += movX;
+      } else {
+        this.x = this.targetX;
+      }
+      var deltaY = this.targetY - this.y;
+      var movY = deltaY/Math.abs(deltaY) * millis*10/1000;
+      if(Math.abs(movY) < Math.abs(deltaY)){
+        this.y += movY;
+      } else {
+        this.y = this.targetY;
+      }
+    } else {
+      this.moving = false;
+    }
   }
 }
 
@@ -42,4 +63,10 @@ Shape.prototype.select = function(){
 
 Shape.prototype.deselect = function(){
   this.selected = false;
+}
+
+Shape.prototype.setTarget = function(x, y){
+  this.targetX = x;
+  this.targetY = y;
+  this.moving = true;
 }

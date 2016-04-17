@@ -23,11 +23,6 @@ window.addEventListener("load" , function(){
 
   var hoverX = 0;
   var hoverY = 0;
-
-  window.addEventListener("mousemove", function(ev){
-    hoverX = Math.floor(ev.clientX/scale);
-    hoverY = Math.floor(ev.clientY/scale);
-  })
   function drawSelector(ctx){
     ctx.translate(hoverX, hoverY);
     ctx.strokeStyle = "white";
@@ -71,31 +66,59 @@ window.addEventListener("load" , function(){
     }
   }
 
-  window.addEventListener("click", select);
+  function move(dirX, dirY){
+    var target = map.getTarget(selected.x, selected.y, dirX, dirY);
+    selected.setTarget(target.x, target.y);
+  }
+
+  window.addEventListener("mousemove", function(ev){
+    if(selected && selected.moving){
+      return;
+    }
+    hoverX = Math.floor(ev.clientX/scale);
+    hoverY = Math.floor(ev.clientY/scale);
+  });
+  window.addEventListener("click", function(){
+    if(selected && selected.moving){
+      return;
+    }
+    select();
+  });
   window.addEventListener("keydown", function(ev){
+    if(selected && selected.moving){
+      return;
+    }
     var key = ev.key || ev.code;
     var keyCode = ev.keyCode || ev.which || ev.charCode;
     console.log(key, keyCode);
-    if(key == "Space" || keyCode == "32"){
+    if(key == "Space" || keyCode == "32" || key == "Enter" || keyCode == "13"){
       select();
       ev.preventDefault();
     } else if(key == "ArrowLeft" || keyCode == 37 || key == "KeyA" || keyCode == 65){
-      if(!selected && hoverX > 0){
+      if(selected){
+        move(-1, 0);
+      }else if(hoverX > 0){
         hoverX-=1;
       }
       ev.preventDefault();
     } else if(key == "ArrowRight" || keyCode == 39 || key == "KeyD" || keyCode == 68){
-      if(!selected && hoverX < Map.mapSize-1){
+      if(selected){
+        move(1, 0);
+      }else if(hoverX < Map.mapSize-1){
         hoverX+=1;
       }
       ev.preventDefault();
     } else if(key == "ArrowUp" || keyCode == 38 || key == "KeyW" || keyCode == 80){
-      if(!selected && hoverY > 0){
+      if(selected){
+        move(0, -1);
+      }else if(hoverY > 0){
         hoverY-=1;
       }
       ev.preventDefault();
     } else if(key == "ArrowDown" || keyCode == 40 || key == "KeyS" || keyCode == 83){
-      if(!selected && hoverY < Map.mapSize-1){
+      if(selected){
+        move(0, 1);
+      }else if(hoverY < Map.mapSize-1){
         hoverY+=1;
       }
       ev.preventDefault();
@@ -104,6 +127,10 @@ window.addEventListener("load" , function(){
 
   function update(millis){
     map.update(millis);
+    if(selected && selected.moving){
+      hoverX = selected.x;
+      hoverY = selected.y;
+    }
   }
   function draw(){
     var ctx = canvas.getContext("2d");
