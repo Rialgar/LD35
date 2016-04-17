@@ -10,6 +10,12 @@ window.addEventListener("load" , function(){
   shapes.push(new Shape(4, 2, 6));
   shapes.push(new Shape(5, 2, 7));
   shapes.push(new Shape(6, 2, 8));
+  shapes.push(new Receptor(1, 3, 3));
+  shapes.push(new Receptor(2, 3, 4));
+  shapes.push(new Receptor(3, 3, 5));
+  shapes.push(new Receptor(4, 3, 6));
+  shapes.push(new Receptor(5, 3, 7));
+  shapes.push(new Receptor(6, 3, 8));
 
   function resize(){
     canvas.width = canvas.clientWidth;

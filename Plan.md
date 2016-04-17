@@ -10,7 +10,7 @@
 ---
 ## TODO
 * Render Shapes __✔__
-* Render Recepticals
+* Render Receptors __✔__
 * Render Map
 * Render Selector
 * Movement
