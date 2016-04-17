@@ -2,6 +2,7 @@ function Shape(x, y, sides){
   this.rotation = 0;
   this.radius = .4;
   this.sides = sides;
+  this.drawnSides = sides;
   this.x = (this.targetX = x);
   this.y = (this.targetY = y);
   this.selected = false;
@@ -34,6 +35,15 @@ Shape.prototype.update = function(millis){
         this.moving = false;
       }
     }
+    if(this.sides != this.drawnSides){
+      var delta = (this.sides - this.drawnSides);
+      var change = delta/Math.abs(delta) * millis/1000;
+      if(Math.abs(change) < Math.abs(delta)){
+        this.drawnSides += change;
+      } else {
+        this.drawnSides = this.sides;
+      }
+    }
   } else {
     this.receptionProgress = Math.min(this.receptionProgress + millis/1000, 1);
     this.setRotation(this.receptionStartAngle * (1-this.receptionProgress));
@@ -58,11 +68,40 @@ Shape.prototype.clear = function(ctx){
   ctx.restore();
 }
 
+function lerpColors(c1, c2, t){
+  var r1 = parseInt(c1.substr(1,2),16);
+  var r2 = parseInt(c2.substr(1,2),16);
+  var r = Math.round(r1 * (1-t) + r2 * t);
+  r = r.toString(16);
+  if(r.length < 2){
+    r = "0"+r;
+  }
+  var g1 = parseInt(c1.substr(3,2),16);
+  var g2 = parseInt(c2.substr(3,2),16);
+  var g = Math.round(g1 * (1-t) + g2 * t);
+  g = g.toString(16);
+  if(g.length < 2){
+    g = "0"+g;
+  }
+  var b1 = parseInt(c1.substr(5,2),16);
+  var b2 = parseInt(c2.substr(5,2),16);
+  var b = Math.round(b1 * (1-t) + b2 * t);
+  b = b.toString(16);
+  if(b.length < 2){
+    b = "0"+b;
+  }
+  return "#"+r+g+b;
+}
+
 Shape.prototype.draw = function(ctx){
-  ctx.fillStyle = shapeColors[(this.sides-3)%shapeColors.length];
+  var floor = Math.floor(this.drawnSides);
+  var ceil = Math.ceil(this.drawnSides);
+  var c1 = shapeColors[(floor-3)%shapeColors.length];
+  var c2 = shapeColors[(ceil-3)%shapeColors.length];
+  ctx.fillStyle = lerpColors(c1, c2, this.drawnSides-floor);
   ctx.beginPath();
-  for(var i = 0; i < this.sides; i++){
-    var angle = this.rotation + i*2*Math.PI/this.sides;
+  for(var i = 0; i < this.drawnSides; i++){
+    var angle = this.rotation + i*2*Math.PI/this.drawnSides;
     var x = Math.sin(angle) * this.radius;
     var y = Math.cos(angle) * this.radius;
     if(i==0){
@@ -115,4 +154,8 @@ Shape.prototype.startReception = function(receptor){
   this.receptionStartY = this.y;
   this.receptor = receptor;
   this.receptionProgress = 0;
+}
+
+Shape.prototype.changeTo = function(newSides){
+  this.sides = newSides;
 }

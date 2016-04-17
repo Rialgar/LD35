@@ -14,6 +14,7 @@ function Map(number, bgCanvas, scale){
   this.tiles = [];
   this.shapes = [];
   this.receptors = [];
+  this.changers = [];
   for(var x = 0; x < Map.mapSize; x++){
     this.tiles[x] = [];
     for(var y = 0; y < Map.mapSize; y++){
@@ -46,6 +47,12 @@ function Map(number, bgCanvas, scale){
         case "z":
           this.tiles[x][y].receptor = new Receptor(x, y, 6);
           break;
+        case "+":
+          this.tiles[x][y].changer = new Changer(x, y, 1);
+          break;
+        case "-":
+          this.tiles[x][y].changer = new Changer(x, y, -1);
+          break;
         default:
       }
       if(this.tiles[x][y].shape){
@@ -53,6 +60,9 @@ function Map(number, bgCanvas, scale){
       }
       if(this.tiles[x][y].receptor){
         this.receptors.push(this.tiles[x][y].receptor);
+      }
+      if(this.tiles[x][y].changer){
+        this.changers.push(this.tiles[x][y].changer);
       }
     }
   }
@@ -75,6 +85,11 @@ Map.prototype.update = function(millis){
       var receptor = this.tiles[xAfter][yAfter].receptor;
       if(receptor && !receptor.filled && receptor.sides == shape.sides){
         shape.startReception(receptor);
+      } else {
+        var changer = this.tiles[xAfter][yAfter].changer;
+        if(changer){
+          changer.change(shape);
+        }
       }
     } else if (shape.receptionProgress === 1){
       this.shapes.splice(this.shapes.indexOf(shape), 1);
@@ -85,6 +100,9 @@ Map.prototype.update = function(millis){
   for(var i = 0; i < this.receptors.length; i++){
     this.receptors[i].update(millis);
   }
+  for(var i = 0; i < this.changers.length; i++){
+    this.changers[i].update(millis);
+  }
 };
 
 Map.prototype.clear = function(ctx){
@@ -93,6 +111,11 @@ Map.prototype.clear = function(ctx){
     this.shapes[i].clear(ctx);
     ctx.translate(-this.shapes[i].x, -this.shapes[i].y);
   }
+  for(var i = 0; i < this.changers.length; i++){
+    ctx.translate(this.changers[i].x, this.changers[i].y);
+    this.changers[i].clear(ctx);
+    ctx.translate(-this.changers[i].x, -this.changers[i].y);
+  }
 }
 
 Map.prototype.draw = function(ctx){
@@ -100,6 +123,11 @@ Map.prototype.draw = function(ctx){
     ctx.translate(this.shapes[i].x, this.shapes[i].y);
     this.shapes[i].draw(ctx);
     ctx.translate(-this.shapes[i].x, -this.shapes[i].y);
+  }
+  for(var i = 0; i < this.changers.length; i++){
+    ctx.translate(this.changers[i].x, this.changers[i].y);
+    this.changers[i].draw(ctx);
+    ctx.translate(-this.changers[i].x, -this.changers[i].y);
   }
 };
 
@@ -167,7 +195,7 @@ Map.specs = [
     "####################",
     "#3#r               #",
     "# ################ #",
-    "# # #z           # #",
+    "# #5#z           # #",
     "# # ############ # #",
     "# # #          # # #",
     "# # #          # # #",
@@ -178,9 +206,9 @@ Map.specs = [
     "# # #          # # #",
     "# # #          # # #",
     "# # #          # # #",
-    "# # #          # # #",
+    "# # #          #6# #",
     "# # ############## #",
-    "# #             t# #",
+    "# #             t#4#",
     "# ##################",
     "#                 e#",
     "####################"
@@ -205,6 +233,50 @@ Map.specs = [
     "#                  #",
     "#          e       #",
     "#                 4#",
+    "####################"
+  ],
+  [
+    "####################",
+    "#3       #         #",
+    "# r                #",
+    "#                  #",
+    "#                  #",
+    "#    #             #",
+    "#         #        #",
+    "#                  #",
+    "#     #            #",
+    "##                 #",
+    "#       #          #",
+    "#                  #",
+    "#              +   #",
+    "# #                #",
+    "#                  #",
+    "#                  #",
+    "#                  #",
+    "#                  #",
+    "#                  #",
+    "####################"
+  ],
+  [
+    "####################",
+    "#6              #  #",
+    "#                  #",
+    "#                  #",
+    "#  #               #",
+    "#              #   #",
+    "#                  #",
+    "#                  #",
+    "#        #         #",
+    "#   #         #    #",
+    "#                  #",
+    "#                  #",
+    "#                  #",
+    "#       e -        #",
+    "#                  #",
+    "#                  #",
+    "#                  #",
+    "#                  #",
+    "#   #              #",
     "####################"
   ]
 ]

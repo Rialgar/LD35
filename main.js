@@ -9,7 +9,8 @@ window.addEventListener("load" , function(){
   document.body.appendChild(curtain);
   var scale = 1;
 
-  var map = new Map(0, bgCanvas, scale);
+  var currentLevel = 0;
+  var map = new Map(currentLevel, bgCanvas, scale);
 
   function resize(){
     canvas.width = canvas.clientWidth;
@@ -135,26 +136,35 @@ window.addEventListener("load" , function(){
         hoverY+=1;
       }
       ev.preventDefault();
+    } else if(key == "KeyR" || keyCode == 82){
+      currentLevel--;
+      advanceLevel();
     }
   })
 
-  var currentLevel = 0;
   var advancing = false;
   function advanceLevel(){
+    selected = null;
     curtain.style.opacity = 1;
-    if(currentLevel+1  >= Map.specs.length){
-      alert("Congratulations! You beat all the levels. Please rate the game at ludumdare.com.");
-    } else {
-      advancing = true;
-    }
+    advancing = true;
   }
 
   curtain.addEventListener("transitionend", function(){
     if(advancing){
-      currentLevel+=1;
-      map = new Map(currentLevel, bgCanvas, scale);
-      curtain.style.opacity = 0;
-      advancing = false;
+      if(currentLevel+1  >= Map.specs.length){
+        alert("Congratulations! You beat all the levels. Please rate the game at ludumdare.com.");
+      } else {
+        var ctx = canvas.getContext("2d");
+        ctx.save();
+        ctx.scale(scale, scale);
+        ctx.translate(.5, .5);
+        map.clear(ctx);
+        ctx.restore();
+        currentLevel+=1;
+        map = new Map(currentLevel, bgCanvas, scale);
+        curtain.style.opacity = 0;
+        advancing = false;
+      }
     }
   });
 

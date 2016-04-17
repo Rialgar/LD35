@@ -15,8 +15,8 @@
 * Render Selector __✔__
 * Movement __✔__
 * Reception __✔__
-* Render Changing Tile
-* Shape Changing
+* Render Changing Tile __✔__
+* Shape Changing __✔__
 * Levels
 * Different Color Sets
 * More Levels
