@@ -4,10 +4,24 @@ function Receptor(x, y, sides){
   this.x = x;
   this.y = y;
   this.filled = false;
+  this.receptionProgress = 0;
 }
 
 Receptor.prototype.update = function(millis){
+  if(this.shape && this.receptionProgress < 1){
+    this.receptionProgress = Math.min(this.receptionProgress + millis/1000, 1);
+    this.shape.setRotation(this.shape.receptionStartAngle * (1-this.receptionProgress));
 
+    this.shape.x = this.shape.receptionStartX * (1-this.receptionProgress) + this.x*this.receptionProgress;
+    this.shape.y = this.shape.receptionStartY * (1-this.receptionProgress) + this.y*this.receptionProgress;
+
+    var sqBase = (this.receptionProgress-.5);
+    this.shape.setScale(2 - sqBase * sqBase * 4);
+
+    if(this.receptionProgress == 1){
+      this.shape.deselect();
+    }
+  }
 }
 
 Receptor.prototype.draw = function(ctx){
@@ -15,7 +29,7 @@ Receptor.prototype.draw = function(ctx){
   ctx.beginPath();
   ctx.rect(-.5, -.5, 1, 1);
   ctx.fill();
-  if(!this.filled){
+  if(this.receptionProgress < 1){
     ctx.fillStyle = "black";
     ctx.beginPath();
     for(var i = 0; i < this.sides; i++){
@@ -30,5 +44,21 @@ Receptor.prototype.draw = function(ctx){
     }
     ctx.closePath();
     ctx.fill();
+    if(this.shape){
+      ctx.save();
+      ctx.translate(this.shape.x - this.x, this.shape.y - this.y);
+      this.shape.draw(ctx);
+      ctx.restore();
+    }
   }
+}
+
+Receptor.prototype.recept = function(shape){
+  if(!this.filled && this.sides == shape.sides){
+    this.filled = true;
+    this.shape = shape;
+    shape.saveReceptionStart();
+    return true;
+  }
+  return false;
 }

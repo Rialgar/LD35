@@ -71,6 +71,13 @@ Map.prototype.update = function(millis){
       this.tiles[xBefore][yBefore].shape = null;
       this.tiles[xAfter][yAfter].shape = shape;
     }
+    var receptor = this.tiles[xAfter][yAfter].receptor;
+    if(receptor && !receptor.filled && receptor.sides == shape.sides){
+      receptor.recept(shape);
+      this.tiles[xAfter][yAfter].shape = null;
+      this.shapes.splice(this.shapes.indexOf(shape), 1);
+      i--;
+    }
   }
   for(var i = 0; i < this.receptors.length; i++){
     this.receptors[i].update(millis);
@@ -98,18 +105,19 @@ Map.prototype.drawBackground = function(){
   ctx.save();
   ctx.scale(this.scale, this.scale);
   ctx.translate(.5, .5);
+  ctx.fillStyle = "grey";
+  ctx.beginPath();
   for(var x = 0; x < Map.mapSize; x++){
     for(var y = 0; y < Map.mapSize; y++){
       var tile = this.tiles[x][y];
       ctx.translate(x, y);
       if(tile.collision){
-        ctx.fillStyle = "grey";
         ctx.rect(-.5, -.5, 1, 1);
-        ctx.fill();
       }
       ctx.translate(-x,-y);
     }
   }
+  ctx.fill();
   ctx.restore();
 }
 
@@ -140,7 +148,7 @@ Map.specs = [
     "####################",
     "#3#r               #",
     "# ################ #",
-    "# #5#z           # #",
+    "# # #z           # #",
     "# # ############ # #",
     "# # #          # # #",
     "# # #          # # #",
@@ -151,11 +159,33 @@ Map.specs = [
     "# # #          # # #",
     "# # #          # # #",
     "# # #          # # #",
-    "# # #          #6# #",
+    "# # #          # # #",
     "# # ############## #",
-    "# #             t#4#",
+    "# #             t# #",
     "# ##################",
     "#                 e#",
+    "####################"
+  ],
+  [
+    "####################",
+    "#3                 #",
+    "#        #         #",
+    "#                 ##",
+    "#                  #",
+    "#                  #",
+    "#    r             #",
+    "#         #        #",
+    "##               # #",
+    "#                  #",
+    "#                  #",
+    "#                  #",
+    "#                  #",
+    "#                  #",
+    "#                  #",
+    "#                  #",
+    "#                  #",
+    "#          e       #",
+    "#                 4#",
     "####################"
   ]
 ]

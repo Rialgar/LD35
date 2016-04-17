@@ -70,3 +70,20 @@ Shape.prototype.setTarget = function(x, y){
   this.targetY = y;
   this.moving = true;
 }
+
+Shape.prototype.setRotation = function(angle){
+  this.rotation = angle;
+}
+
+Shape.prototype.setScale = function(scale){
+  this.radius = .4 * scale;
+}
+
+Shape.prototype.saveReceptionStart = function(){
+  while(this.rotation > -Math.PI/2){
+    this.rotation -= Math.PI * 2/this.sides;
+  }
+  this.receptionStartAngle = this.rotation;
+  this.receptionStartX = this.x;
+  this.receptionStartY = this.y;
+}

@@ -4,6 +4,9 @@ window.addEventListener("load" , function(){
   var canvas = document.createElement("canvas");
   canvas.style.zIndex = 500;
   document.body.appendChild(canvas);
+  var curtain = document.createElement("div");
+  curtain.style.zIndex = 1000;
+  document.body.appendChild(curtain);
   var scale = 1;
 
   var map = new Map(0, bgCanvas, scale);
@@ -125,11 +128,37 @@ window.addEventListener("load" , function(){
     }
   })
 
+  var currentLevel = 0;
+  var advancing = false;
+  function advanceLevel(){
+    curtain.style.opacity = 1;
+    if(currentLevel+1  >= Map.specs.length){
+      alert("Congratulations! You beat all the levels. Please rate the game at ludumdare.com.");
+    } else {
+      advancing = true;
+    }
+  }
+
+  curtain.addEventListener("transitionend", function(){
+    if(advancing){
+      currentLevel+=1;
+      map = new Map(currentLevel, bgCanvas, scale);
+      curtain.style.opacity = 0;
+      advancing = false;
+    }
+  });
+
   function update(millis){
     map.update(millis);
     if(selected && selected.moving){
       hoverX = selected.x;
       hoverY = selected.y;
+    }
+    if(selected && !selected.selected){
+      selected = null;
+      if(map.shapes.length == 0){
+        advanceLevel();
+      }
     }
   }
   function draw(){
