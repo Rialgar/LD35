@@ -11,7 +11,7 @@
 ## TODO
 * Render Shapes __✔__
 * Render Receptors __✔__
-* Render Map
+* Render Map __✔__
 * Render Selector
 * Movement
 * Reception

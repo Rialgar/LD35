@@ -11,8 +11,7 @@ Shape.prototype.update = function(millis){
 }
 
 Shape.prototype.draw = function(ctx){
-  ctx.save();
-  ctx.translate(this.x, this.y);
+  ctx.fillStyle = shapeColors[(this.sides-3)%shapeColors.length];
   ctx.beginPath();
   for(var i = 0; i < this.sides; i++){
     var angle = this.rotation + i*2*Math.PI/this.sides;
@@ -25,7 +24,5 @@ Shape.prototype.draw = function(ctx){
     }
   }
   ctx.closePath();
-  ctx.fillStyle = shapeColors[(this.sides-3)%shapeColors.length];
   ctx.fill();
-  ctx.restore();
 }

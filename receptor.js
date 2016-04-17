@@ -11,13 +11,12 @@ Receptor.prototype.update = function(millis){
 }
 
 Receptor.prototype.draw = function(ctx){
-  ctx.save();
-  ctx.translate(this.x, this.y);
-  ctx.beginPath();
   ctx.fillStyle = shapeColors[(this.sides-3)%shapeColors.length];
+  ctx.beginPath();
   ctx.rect(-.5, -.5, 1, 1);
   ctx.fill();
   if(!this.filled){
+    ctx.fillStyle = "black";
     ctx.beginPath();
     for(var i = 0; i < this.sides; i++){
       var angle = i*2*Math.PI/this.sides;
@@ -30,8 +29,6 @@ Receptor.prototype.draw = function(ctx){
       }
     }
     ctx.closePath();
-    ctx.fillStyle = "black";
     ctx.fill();
   }
-  ctx.restore();
 }
