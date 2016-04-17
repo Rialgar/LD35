@@ -10,7 +10,7 @@ Changer.prototype.clear = function(ctx){
 
 Changer.prototype.draw = function(ctx){
   if(this.amount > 0){
-    ctx.fillStyle = "green";
+    ctx.fillStyle = plusColor;
     ctx.beginPath();
     ctx.moveTo(-0.3, -0.1);
     ctx.lineTo(-0.1, -0.1);
@@ -27,7 +27,7 @@ Changer.prototype.draw = function(ctx){
     ctx.closePath();
     ctx.fill();
   } else if (this.amount < 0){
-    ctx.fillStyle = "darkred";
+    ctx.fillStyle = minusColor;
     ctx.beginPath();
     ctx.moveTo(-0.3, -0.1);
     ctx.lineTo( 0.3, -0.1);

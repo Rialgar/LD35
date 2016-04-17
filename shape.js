@@ -113,7 +113,7 @@ Shape.prototype.draw = function(ctx){
   ctx.closePath();
   ctx.fill();
   if(this.selected){
-    ctx.strokeStyle = "white";
+    ctx.strokeStyle = selectorColor;
     ctx.lineWidth = .05;
     ctx.lineJoin = "round";
     ctx.stroke();

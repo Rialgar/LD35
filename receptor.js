@@ -42,10 +42,10 @@ Receptor.prototype.draw = function(ctx){
   }
   ctx.closePath();
   if(!this.filled){
-    ctx.fillStyle = "black";
+    ctx.fillStyle = backgroundColor;
     ctx.fill();
   } else {
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = backgroundColor;
     ctx.lineWidth = .05;
     ctx.lineJoin = "round";
     ctx.stroke();

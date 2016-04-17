@@ -36,7 +36,7 @@ window.addEventListener("load" , function(){
   }
   function drawSelector(ctx){
     ctx.translate(hoverX, hoverY);
-    ctx.strokeStyle = "white";
+    ctx.strokeStyle = selectorColor;
     ctx.lineWidth = .1;
     ctx.lineCap = "round";
     ctx.beginPath();
@@ -71,7 +71,7 @@ window.addEventListener("load" , function(){
     }
     if(map.tiles[hoverX] && map.tiles[hoverX][hoverY]){
       var shape = map.tiles[hoverX][hoverY].shape;
-      if(shape && selected != shape){
+      if(shape && selected != shape && shape.receptionProgress === false){
         shape.select();
         selected = shape;
       } else {
@@ -98,6 +98,7 @@ window.addEventListener("load" , function(){
     }
     select();
   });
+  var colorset = 0;
   window.addEventListener("keydown", function(ev){
     if(selected && selected.moving){
       return;
@@ -139,6 +140,10 @@ window.addEventListener("load" , function(){
     } else if(key == "KeyR" || keyCode == 82){
       currentLevel--;
       advanceLevel();
+    } else if(key == "KeyC" || keyCode == 67){
+      colorset = (colorset+1)%4;
+      setColorSet(colorset);
+      map.drawBackground();
     }
   })
 

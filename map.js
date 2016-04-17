@@ -133,12 +133,12 @@ Map.prototype.draw = function(ctx){
 
 Map.prototype.drawBackground = function(){
   var ctx = this.bgCanvas.getContext("2d");
-  ctx.fillStyle = "black";
+  ctx.fillStyle = backgroundColor;
   ctx.fillRect(0, 0, this.bgCanvas.width, this.bgCanvas.height);
   ctx.save();
   ctx.scale(this.scale, this.scale);
   ctx.translate(.5, .5);
-  ctx.fillStyle = "grey";
+  ctx.fillStyle = wallColor;
   ctx.beginPath();
   for(var x = 0; x < Map.mapSize; x++){
     for(var y = 0; y < Map.mapSize; y++){
@@ -197,6 +197,7 @@ Map.specs = [
     "# ################ #",
     "# #5#z           # #",
     "# # ############ # #",
+    "# # #+        -# # #",
     "# # #          # # #",
     "# # #          # # #",
     "# # #          # # #",
@@ -205,8 +206,7 @@ Map.specs = [
     "# # #          # # #",
     "# # #          # # #",
     "# # #          # # #",
-    "# # #          # # #",
-    "# # #          #6# #",
+    "# # #-        +#6# #",
     "# # ############## #",
     "# #             t#4#",
     "# ##################",
