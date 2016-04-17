@@ -4,10 +4,13 @@ function Shape(x, y, sides){
   this.sides = sides;
   this.x = x;
   this.y = y;
+  this.selected = false;
 }
 
 Shape.prototype.update = function(millis){
-  this.rotation += Math.PI * millis/1000;
+  if(this.selected){
+    this.rotation = (this.rotation + Math.PI * millis/1000)%(2*Math.PI);
+  }
 }
 
 Shape.prototype.draw = function(ctx){
@@ -25,4 +28,18 @@ Shape.prototype.draw = function(ctx){
   }
   ctx.closePath();
   ctx.fill();
+  if(this.selected){
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = .05;
+    ctx.lineJoin = "round";
+    ctx.stroke();
+  }
+}
+
+Shape.prototype.select = function(){
+  this.selected = true;
+}
+
+Shape.prototype.deselect = function(){
+  this.selected = false;
 }

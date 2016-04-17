@@ -1,14 +1,12 @@
-var mapSize = 20;
-
 function Map(number, bgCanvas, scale){
   var spec = Map.specs[number];
   if(!spec){
     throw new Error("No such map: '"+number+"'");
   }
-  if(spec.length != mapSize){
+  if(spec.length != Map.mapSize){
     throw new Error("Invalid map height "+spec.length+" in map: '"+number+"'");
   }
-  if(spec[0].length != mapSize){
+  if(spec[0].length != Map.mapSize){
     throw new Error("Invalid map width "+spec[0].length+" in map: '"+number+"'");
   }
   this.bgCanvas = bgCanvas;
@@ -16,9 +14,9 @@ function Map(number, bgCanvas, scale){
   this.tiles = [];
   this.shapes = [];
   this.receptors = [];
-  for(var x = 0; x < mapSize; x++){
+  for(var x = 0; x < Map.mapSize; x++){
     this.tiles[x] = [];
-    for(var y = 0; y < mapSize; y++){
+    for(var y = 0; y < Map.mapSize; y++){
       this.tiles[x][y] = {collision: false};
       switch (spec[y][x]) {
         case "#":
@@ -91,12 +89,12 @@ Map.prototype.drawBackground = function(){
   ctx.save();
   ctx.scale(this.scale, this.scale);
   ctx.translate(.5, .5);
-  for(var x = 0; x < mapSize; x++){
-    for(var y = 0; y < mapSize; y++){
+  for(var x = 0; x < Map.mapSize; x++){
+    for(var y = 0; y < Map.mapSize; y++){
       var tile = this.tiles[x][y];
       ctx.translate(x, y);
       if(tile.collision){
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "grey";
         ctx.rect(-.5, -.5, 1, 1);
         ctx.fill();
       }
@@ -114,24 +112,26 @@ Map.prototype.resize = function(scale){
 Map.specs = [
   [
     "####################",
-    "#3#                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
-    "# #                #",
+    "#3#4#5#6#          #",
+    "# # # # #          #",
+    "# # # # #          #",
+    "# # # # #          #",
+    "# # # # #          #",
+    "# # # # #          #",
+    "# # # # #          #",
+    "# # # # #          #",
+    "# # # # #          #",
+    "# # # # #          #",
+    "# # # # ############",
+    "# # # #           z#",
+    "# # # ##############",
+    "# # #             t#",
+    "# # ################",
+    "# #               r#",
     "# ##################",
     "#                 e#",
     "####################"
   ]
 ]
+
+Map.mapSize = 20;

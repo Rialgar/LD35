@@ -2,6 +2,7 @@ window.addEventListener("load" , function(){
   var bgCanvas = document.createElement("canvas");
   document.body.appendChild(bgCanvas);
   var canvas = document.createElement("canvas");
+  canvas.style.zIndex = 500;
   document.body.appendChild(canvas);
   var scale = 1;
 
@@ -20,6 +21,87 @@ window.addEventListener("load" , function(){
   resize();
   window.addEventListener("resize", resize);
 
+  var hoverX = 0;
+  var hoverY = 0;
+
+  window.addEventListener("mousemove", function(ev){
+    hoverX = Math.floor(ev.clientX/scale);
+    hoverY = Math.floor(ev.clientY/scale);
+  })
+  function drawSelector(ctx){
+    ctx.translate(hoverX, hoverY);
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = .1;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+
+    ctx.moveTo(-.5, -.2);
+    ctx.arc(-.3, -.3, .2, Math.PI, 3/2*Math.PI);
+    ctx.lineTo(-.2, -.5);
+
+    ctx.moveTo(.2, -.5);
+    ctx.arc(.3, -.3, .2, 3/2*Math.PI, 0);
+    ctx.lineTo(.5, -.2);
+
+    ctx.moveTo(.5, .2);
+    ctx.arc(.3, .3, .2, 0, 1/2*Math.PI);
+    ctx.lineTo(.2, .5);
+
+    ctx.moveTo(-.2, .5);
+    ctx.arc(-.3, .3, .2, 1/2*Math.PI, Math.PI);
+    ctx.lineTo(-.5, .2);
+
+    ctx.stroke();
+  }
+
+  var selected = null;
+
+  function select(){
+    if(selected){
+      selected.deselect();
+    }
+    if(map.tiles[hoverX] && map.tiles[hoverX][hoverY]){
+      var shape = map.tiles[hoverX][hoverY].shape;
+      if(shape && selected != shape){
+        shape.select();
+        selected = shape;
+      } else {
+        selected = null;
+      }
+    }
+  }
+
+  window.addEventListener("click", select);
+  window.addEventListener("keydown", function(ev){
+    var key = ev.key || ev.code;
+    var keyCode = ev.keyCode || ev.which || ev.charCode;
+    console.log(key, keyCode);
+    if(key == "Space" || keyCode == "32"){
+      select();
+      ev.preventDefault();
+    } else if(key == "ArrowLeft" || keyCode == 37 || key == "KeyA" || keyCode == 65){
+      if(!selected && hoverX > 0){
+        hoverX-=1;
+      }
+      ev.preventDefault();
+    } else if(key == "ArrowRight" || keyCode == 39 || key == "KeyD" || keyCode == 68){
+      if(!selected && hoverX < Map.mapSize-1){
+        hoverX+=1;
+      }
+      ev.preventDefault();
+    } else if(key == "ArrowUp" || keyCode == 38 || key == "KeyW" || keyCode == 80){
+      if(!selected && hoverY > 0){
+        hoverY-=1;
+      }
+      ev.preventDefault();
+    } else if(key == "ArrowDown" || keyCode == 40 || key == "KeyS" || keyCode == 83){
+      if(!selected && hoverY < Map.mapSize-1){
+        hoverY+=1;
+      }
+      ev.preventDefault();
+    }
+  })
+
   function update(millis){
     map.update(millis);
   }
@@ -29,6 +111,7 @@ window.addEventListener("load" , function(){
     ctx.save();
     ctx.scale(scale, scale);
     map.draw(ctx);
+    drawSelector(ctx);
     ctx.restore();
   }
   var last = Date.now();

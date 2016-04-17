@@ -12,9 +12,11 @@
 * Render Shapes __✔__
 * Render Receptors __✔__
 * Render Map __✔__
-* Render Selector
+* Render Selector __✔__
 * Movement
 * Reception
 * Render Changing Tile
 * Shape Changing
 * Levels
+* Different Color Sets
+* More Levels
