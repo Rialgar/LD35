@@ -17,6 +17,6 @@
 * Reception __✔__
 * Render Changing Tile __✔__
 * Shape Changing __✔__
-* Levels
+* Levels __✔__
 * Different Color Sets
 * More Levels
