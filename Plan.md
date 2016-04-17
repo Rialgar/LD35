@@ -14,7 +14,7 @@
 * Render Map __✔__
 * Render Selector __✔__
 * Movement __✔__
-* Reception
+* Reception __✔__
 * Render Changing Tile
 * Shape Changing
 * Levels

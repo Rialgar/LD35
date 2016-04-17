@@ -71,12 +71,15 @@ Map.prototype.update = function(millis){
       this.tiles[xBefore][yBefore].shape = null;
       this.tiles[xAfter][yAfter].shape = shape;
     }
-    var receptor = this.tiles[xAfter][yAfter].receptor;
-    if(receptor && !receptor.filled && receptor.sides == shape.sides){
-      receptor.recept(shape);
-      this.tiles[xAfter][yAfter].shape = null;
+    if(shape.receptionProgress === false){
+      var receptor = this.tiles[xAfter][yAfter].receptor;
+      if(receptor && !receptor.filled && receptor.sides == shape.sides){
+        shape.startReception(receptor);
+      }
+    } else if (shape.receptionProgress === 1){
       this.shapes.splice(this.shapes.indexOf(shape), 1);
       i--;
+      this.redrawReceptor(shape.receptor);
     }
   }
   for(var i = 0; i < this.receptors.length; i++){
@@ -84,13 +87,15 @@ Map.prototype.update = function(millis){
   }
 };
 
-Map.prototype.draw = function(ctx){
-  ctx.translate(.5, .5);
-  for(var i = 0; i < this.receptors.length; i++){
-    ctx.translate(this.receptors[i].x, this.receptors[i].y);
-    this.receptors[i].draw(ctx);
-    ctx.translate(-this.receptors[i].x, -this.receptors[i].y);
+Map.prototype.clear = function(ctx){
+  for(var i = 0; i < this.shapes.length; i++){
+    ctx.translate(this.shapes[i].x, this.shapes[i].y);
+    this.shapes[i].clear(ctx);
+    ctx.translate(-this.shapes[i].x, -this.shapes[i].y);
   }
+}
+
+Map.prototype.draw = function(ctx){
   for(var i = 0; i < this.shapes.length; i++){
     ctx.translate(this.shapes[i].x, this.shapes[i].y);
     this.shapes[i].draw(ctx);
@@ -118,6 +123,20 @@ Map.prototype.drawBackground = function(){
     }
   }
   ctx.fill();
+  for(var i = 0; i < this.receptors.length; i++){
+    ctx.translate(this.receptors[i].x, this.receptors[i].y);
+    this.receptors[i].draw(ctx);
+    ctx.translate(-this.receptors[i].x, -this.receptors[i].y);
+  }
+  ctx.restore();
+}
+
+Map.prototype.redrawReceptor = function(receptor){
+  var ctx = this.bgCanvas.getContext("2d");
+  ctx.save();
+  ctx.scale(this.scale, this.scale);
+  ctx.translate(receptor.x + .5, receptor.y + .5);
+  receptor.draw(ctx);
   ctx.restore();
 }
 
@@ -176,7 +195,7 @@ Map.specs = [
     "#    r             #",
     "#         #        #",
     "##               # #",
-    "#                  #",
+    "#         #        #",
     "#                  #",
     "#                  #",
     "#                  #",

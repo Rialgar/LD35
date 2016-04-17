@@ -29,7 +29,7 @@ Receptor.prototype.draw = function(ctx){
   ctx.beginPath();
   ctx.rect(-.5, -.5, 1, 1);
   ctx.fill();
-  if(this.receptionProgress < 1){
+  if(!this.filled){
     ctx.fillStyle = "black";
     ctx.beginPath();
     for(var i = 0; i < this.sides; i++){
@@ -44,21 +44,5 @@ Receptor.prototype.draw = function(ctx){
     }
     ctx.closePath();
     ctx.fill();
-    if(this.shape){
-      ctx.save();
-      ctx.translate(this.shape.x - this.x, this.shape.y - this.y);
-      this.shape.draw(ctx);
-      ctx.restore();
-    }
   }
-}
-
-Receptor.prototype.recept = function(shape){
-  if(!this.filled && this.sides == shape.sides){
-    this.filled = true;
-    this.shape = shape;
-    shape.saveReceptionStart();
-    return true;
-  }
-  return false;
 }

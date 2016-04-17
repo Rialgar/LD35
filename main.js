@@ -25,7 +25,14 @@ window.addEventListener("load" , function(){
   window.addEventListener("resize", resize);
 
   var hoverX = 0;
+  var lastHoverX = 0;
   var hoverY = 0;
+  var lastHoverY = 0;
+  function clearSelector(ctx){
+    ctx.translate(lastHoverX, lastHoverY);
+    ctx.clearRect(-.6, -.6, 1.2, 1.2);
+    ctx.translate(-lastHoverX, -lastHoverY);
+  }
   function drawSelector(ctx){
     ctx.translate(hoverX, hoverY);
     ctx.strokeStyle = "white";
@@ -50,6 +57,9 @@ window.addEventListener("load" , function(){
     ctx.lineTo(-.5, .2);
 
     ctx.stroke();
+    ctx.translate(-hoverX, -hoverY);
+    lastHoverX = hoverX;
+    lastHoverY = hoverY;
   }
 
   var selected = null;
@@ -163,9 +173,11 @@ window.addEventListener("load" , function(){
   }
   function draw(){
     var ctx = canvas.getContext("2d");
-    ctx.clearRect(0,0,canvas.width, canvas.height);
     ctx.save();
     ctx.scale(scale, scale);
+    ctx.translate(.5, .5);
+    map.clear(ctx);
+    clearSelector(ctx);
     map.draw(ctx);
     drawSelector(ctx);
     ctx.restore();
