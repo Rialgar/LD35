@@ -157,7 +157,7 @@ window.addEventListener("load" , function(){
   curtain.addEventListener("transitionend", function(){
     if(advancing){
       if(currentLevel+1  >= Map.specs.length){
-        alert("Congratulations! You beat all the levels. Please rate the game at ludumdare.com.");
+        alert("Congratulations! You beat all the levels. Please rate the game at http://ludumdare.com/compo/ludum-dare-35/?action=preview&uid=3996.");
       } else {
         var ctx = canvas.getContext("2d");
         ctx.save();
@@ -208,4 +208,5 @@ window.addEventListener("load" , function(){
   }
   window.requestAnimationFrame(step);
 
+  window.advanceLevel = advanceLevel;
 });
