@@ -1,4 +1,4 @@
-# Platonic Shift
+# Slide and Match
 ---
 ## Concept
 * Regular Polygons Shapes
