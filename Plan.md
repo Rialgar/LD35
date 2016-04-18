@@ -18,5 +18,5 @@
 * Render Changing Tile __✔__
 * Shape Changing __✔__
 * Levels __✔__
-* Different Color Sets
-* More Levels
+* Different Color Sets __✔__
+* More Levels __✔__

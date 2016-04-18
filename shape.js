@@ -11,6 +11,15 @@ function Shape(x, y, sides){
 }
 
 Shape.prototype.update = function(millis){
+  if(this.sides != this.drawnSides){
+    var delta = (this.sides - this.drawnSides);
+    var change = delta/Math.abs(delta) * millis/1000;
+    if(Math.abs(change) < Math.abs(delta)){
+      this.drawnSides += change;
+    } else {
+      this.drawnSides = this.sides;
+    }
+  }
   if(this.receptionProgress === false){
     if(this.selected){
       this.rotation = (this.rotation + Math.PI * millis/1000)%(2*Math.PI);
@@ -35,16 +44,7 @@ Shape.prototype.update = function(millis){
         this.moving = false;
       }
     }
-    if(this.sides != this.drawnSides){
-      var delta = (this.sides - this.drawnSides);
-      var change = delta/Math.abs(delta) * millis/1000;
-      if(Math.abs(change) < Math.abs(delta)){
-        this.drawnSides += change;
-      } else {
-        this.drawnSides = this.sides;
-      }
-    }
-  } else {
+  } else if (this.receptionProgress < 1){
     this.receptionProgress = Math.min(this.receptionProgress + millis/1000, 1);
     this.setRotation(this.receptionStartAngle * (1-this.receptionProgress));
 
@@ -53,11 +53,10 @@ Shape.prototype.update = function(millis){
 
     var sqBase = (this.receptionProgress-.5);
     this.setScale(2 - sqBase * sqBase * 4);
-
-    if(this.receptionProgress == 1){
-      this.deselect();
-      this.receptor.filled = true;
-    }
+  } else {
+    this.deselect();
+    this.receptor.filled = true;
+    this.moving = false;
   }
 }
 
